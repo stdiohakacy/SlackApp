@@ -1,7 +1,7 @@
-import firebase from 'firebase/app';
-import "firebase/auth";
-import "firebase/database";
-import "firebase/storage";
+import firebase from 'firebase/app'
+import "firebase/auth"
+import "firebase/database"
+import "firebase/storage"
 
 const firebaseConfig = {
     apiKey: "AIzaSyD4N35_56fUS-gcR03pbE08EwRK8q9el7k",
@@ -12,10 +12,10 @@ const firebaseConfig = {
     messagingSenderId: "454448373617",
     appId: "1:454448373617:web:596d528948858b7652a0d0",
     measurementId: "G-81GKKNZHGX"
-};
+}
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-// firebase.analytics();
+firebase.initializeApp(firebaseConfig)
+// firebase.analytics()
 
-export default firebase;
+export default firebase
