@@ -16,11 +16,6 @@ class Register extends Component {
         usersRef: firebase.database().ref("users")
     }
 
-    /**
-     * ===========================================
-     * ||                 Function              ||
-     * ===========================================
-     */
     isFormEmpty = ({ username, email, password, passwordConfirmation }) => {
         return (
             !username.length || 
@@ -69,23 +64,13 @@ class Register extends Component {
         })
     }
 
-    /**
-     * ===========================================
-     * ||                 Style                 ||
-     * ===========================================
-     */
     handleInputError = (errors, inputName) => {
         return errors.some(error => {
             console.log(error)
             return error.message.toLowerCase().includes(inputName)
         }) ? 'error' : ''
     }
-
-    /**
-     * ===========================================
-     * ||                 Event                 ||
-     * ===========================================
-     */
+    
     handleChange = (event) => {
         this.setState({ [event.target.name]: event.target.value })
     }
@@ -104,6 +89,7 @@ class Register extends Component {
                     }).then(() => {
                         this.saveUser(createdUser).then(() => {
                             console.log('user saved!')
+                            // this.props.history.push('/')
                         })
                     }).catch(error => {
                         this.setState({

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Grid, Form, Segment, Button, Header, Message, Icon } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import { isEmailValid } from '../../helpers/DataHelper'
 import firebase from '../../firebase'
 
 class Login extends Component {
@@ -11,21 +10,11 @@ class Login extends Component {
         errors: [],
         loading: false
     }
-
-    /**
-     * ===========================================
-     * ||                 Function              ||
-     * ===========================================
-     */
+    
     displayErrors = (errors) => errors.map((error, idx) => <p key={idx}>{error.message}</p>)
 
     isFormValid = ({email, password}) => email && password
 
-    /**
-     * ===========================================
-     * ||                 Style                 ||
-     * ===========================================
-     */
     handleInputError = (errors, inputName) => {
         return errors.some(error => {
             console.log(error)
@@ -33,11 +22,6 @@ class Login extends Component {
         }) ? 'error' : ''
     }
 
-    /**
-     * ===========================================
-     * ||                 Event                 ||
-     * ===========================================
-     */
     handleChange = (event) => {
         this.setState({ [event.target.name]: event.target.value })
     }
@@ -45,15 +29,22 @@ class Login extends Component {
     handleSubmit = (event) => {
         event.preventDefault()
         if (this.isFormValid(this.state)) {
+            const {email, password} = this.state
             this.setState({ errors: [], loading: true })
             firebase
                 .auth()
-                .signInWithEmailAndPassword(this.state.email, this.state.password)
-                .then(signedInUser => console.log(signedInUser))
-                .catch(error => this.setState({
-                    errors: this.state.errors.concat(error),
-                    loading: false
-                }))
+                .signInWithEmailAndPassword(email, password)
+                .then(signedInUser => {
+                    console.log(signedInUser)
+                    // this.props.history.push('/')
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.setState({
+                        errors: this.state.errors.concat(error),
+                        loading: false
+                    })
+                })
         }
     }
 
