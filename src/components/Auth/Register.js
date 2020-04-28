@@ -102,7 +102,7 @@ class Register extends Component {
                     console.log(createdUser)
                 })
                 .catch(error => {
-                    this.setState({ errors: this.state.errors.concat(error), loading: true })
+                    this.setState({ errors: this.state.errors.concat(error), loading: false })
                     console.log(error)
                 })
         }
