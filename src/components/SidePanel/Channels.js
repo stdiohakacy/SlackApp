@@ -4,18 +4,24 @@ import { connect } from 'react-redux'
 import { setCurrentChannel } from '../../actions'
 import firebase from '../../firebase'
 
-class Chanels extends Component {
+class Channels extends Component {
     state = {
+        activeChannel: '',
         channelName: '',
         channelDetails: '',
         channels: [],
         modal: false,
+        firstLoad: true,
         user: this.props.currentUser,
         channelsRef: firebase.database().ref('channels'),
     }
 
     componentDidMount() {
         this.addListener()
+    }
+
+    componentWillUnmount() {
+        this.removeListener()
     }
 
     displayChannels = channels => (
@@ -25,6 +31,7 @@ class Chanels extends Component {
                 onClick={() => this.changeChannel(channel)}
                 name={channel.name}
                 style={{ opacity: 0.7 }}
+                active={channel.id === this.state.activeChannel}
             >
                 # {channel.name}
             </Menu.Item>
@@ -35,8 +42,25 @@ class Chanels extends Component {
         let loadedChannels = []
         this.state.channelsRef.on('child_added', snap => {
             loadedChannels.push(snap.val())
-            this.setState({ channels: loadedChannels })
+            this.setState({ channels: loadedChannels }, () => this.setFirstChannel())
         })
+    }
+
+    removeListener = () => {
+        this.state.channelsRef.off()
+    }
+
+    setFirstChannel = () => {
+        const firstChannel = this.state.channels[0]
+        
+
+        if(this.state.firstLoad && this.state.channels.length > 0) {
+            console.log('asd')
+            this.props.setCurrentChannel(firstChannel)
+            this.setActiveChannel(firstChannel)
+        }
+
+        this.setState({firstLoad: false})
     }
 
     handleChange = event => {
@@ -44,7 +68,13 @@ class Chanels extends Component {
     }
 
     changeChannel = channel => {
+        this.setActiveChannel(channel)
         this.props.setCurrentChannel(channel)
+    }
+
+    setActiveChannel = channel => {
+        console.log(channel.id)
+        this.setState({activeChannel: channel.id})
     }
 
     addChanel = () => {
@@ -131,4 +161,4 @@ class Chanels extends Component {
     }
 }
 
-export default connect(null, {setCurrentChannel})(Chanels)
+export default connect(null, {setCurrentChannel})(Channels)
