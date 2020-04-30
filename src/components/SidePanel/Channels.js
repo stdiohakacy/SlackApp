@@ -55,7 +55,6 @@ class Channels extends Component {
         
 
         if(this.state.firstLoad && this.state.channels.length > 0) {
-            console.log('asd')
             this.props.setCurrentChannel(firstChannel)
             this.setActiveChannel(firstChannel)
         }
@@ -73,7 +72,6 @@ class Channels extends Component {
     }
 
     setActiveChannel = channel => {
-        console.log(channel.id)
         this.setState({activeChannel: channel.id})
     }
 
