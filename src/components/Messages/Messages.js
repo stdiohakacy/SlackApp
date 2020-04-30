@@ -8,11 +8,13 @@ import Message from './Message'
 
 class Messages extends Component {
     state = {
+        privateMessageRef: firebase.database().ref('privateMessages'),
         messagesRef: firebase.database().ref('messages'),
         messages: [],
         messagesLoading: true,
         channel: this.props.currentChannel,
         user: this.props.currentUser,
+        privateChannel: this.props.isPrivateChannel,
         numUniqueUsers: '',
         searchTerm: '',
         searchLoading: false,
@@ -33,7 +35,9 @@ class Messages extends Component {
 
     addMessageListener = channelId => {
         let loadedMessages = []
-        this.state.messagesRef.child(channelId).on('child_added', snap => {
+        const ref = this.getMessagesRef()
+
+        ref.child(channelId).on('child_added', snap => {
             loadedMessages.push(snap.val())
             this.setState({
                 messages: loadedMessages,
@@ -46,7 +50,7 @@ class Messages extends Component {
 
     countUniqueUsers = (messages) => {
         const uniqueUsers = messages.reduce((acc, message) => {
-            if(!acc.includes(message.user.name))
+            if (!acc.includes(message.user.name))
                 acc.push(message.user.name)
             return acc
         }, [])
@@ -54,7 +58,7 @@ class Messages extends Component {
         const plural = uniqueUsers.length > 1 || uniqueUsers.length === 0
 
         const numUniqueUsers = `${uniqueUsers.length} user${plural ? 's' : ''}`
-        this.setState({numUniqueUsers})
+        this.setState({ numUniqueUsers })
     }
 
     handleSearchChange = event => {
@@ -68,12 +72,17 @@ class Messages extends Component {
         const channelMessage = [...this.state.messages]
         const regex = new RegExp(this.state.searchTerm, 'gi')
         const searchResults = channelMessage.reduce((acc, message) => {
-            if(message.content && message.content.match(regex))
+            if (message.content && message.content.match(regex))
                 acc.push(message)
             return acc
         }, [])
 
-        this.setState({searchResults})
+        this.setState({ searchResults })
+    }
+
+    getMessagesRef = () => {
+        const { privateChannel, messagesRef, privateMessageRef } = this.state
+        return privateChannel ? privateMessageRef : messagesRef
     }
 
     displayMessages = messages =>
@@ -86,22 +95,25 @@ class Messages extends Component {
             />
         ))
 
-    displayChannelName = channel => channel ? `# ${channel.name}` : ''
+    displayChannelName = channel => {
+        return channel ? `${this.state.privateChannel ? '@' : '#'}${channel.name}` : ''
+    }
 
     render() {
-        const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults } = this.state
+        const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults, privateChannel } = this.state
 
         return (
             <React.Fragment>
-                <MessagesHeader 
+                <MessagesHeader
                     channelName={this.displayChannelName(channel)}
                     numUniqueUsers={numUniqueUsers}
                     handleSearchChange={this.handleSearchChange}
+                    isPrivateChannel={privateChannel}
                 />
 
                 <Segment>
                     <Comment.Group className='messages'>
-                        { searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
+                        {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
                     </Comment.Group>
                 </Segment>
 
@@ -109,6 +121,8 @@ class Messages extends Component {
                     messagesRef={messagesRef}
                     currentChannel={channel}
                     currentUser={user}
+                    isPrivateChannel={privateChannel}
+                    getMessagesRef={this.getMessagesRef}
                 />
             </React.Fragment>
         )
