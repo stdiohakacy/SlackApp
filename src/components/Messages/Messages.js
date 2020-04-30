@@ -1,74 +1,74 @@
-import React, { Component } from 'react';
-import { Segment, Comment } from 'semantic-ui-react';
-import firebase from '../../firebase';
+import React, { Component } from 'react'
+import { Segment, Comment } from 'semantic-ui-react'
+import firebase from '../../firebase'
 
-import MessagesHeader from './MessagesHeader';
-import MessageForm from './MessageForm';
-import Message from './Message';
+import MessagesHeader from './MessagesHeader'
+import MessageForm from './MessageForm'
+import Message from './Message'
 
 class Messages extends Component {
-  state = {
-    messagesRef: firebase.database().ref('messages'),
-    messages: [],
-    messagesLoading: true,
-    channel: this.props.currentChannel,
-    user: this.props.currentUser
-  };
-
-  componentDidMount() {
-    const { channel, user } = this.state;
-
-    if (channel && user) {
-      this.addListeners(channel.id);
+    state = {
+        messagesRef: firebase.database().ref('messages'),
+        messages: [],
+        messagesLoading: true,
+        channel: this.props.currentChannel,
+        user: this.props.currentUser
     }
-  }
 
-  addListeners = channelId => {
-    this.addMessageListener(channelId);
-  };
+    componentDidMount() {
+        const { channel, user } = this.state
 
-  addMessageListener = channelId => {
-    let loadedMessages = [];
-    this.state.messagesRef.child(channelId).on('child_added', snap => {
-      loadedMessages.push(snap.val());
-      this.setState({
-        messages: loadedMessages,
-        messagesLoading: false
-      });
-    });
-  };
+        if (channel && user) {
+            this.addListeners(channel.id)
+        }
+    }
 
-  displayMessages = messages =>
-    messages.length > 0 &&
-    messages.map(message => (
-      <Message
-        key={message.timestamp}
-        message={message}
-        user={this.state.user}
-      />
-    ));
+    addListeners = channelId => {
+        this.addMessageListener(channelId)
+    }
 
-  render() {
-    const { messagesRef, messages, channel, user } = this.state;
+    addMessageListener = channelId => {
+        let loadedMessages = []
+        this.state.messagesRef.child(channelId).on('child_added', snap => {
+            loadedMessages.push(snap.val())
+            this.setState({
+                messages: loadedMessages,
+                messagesLoading: false
+            })
+        })
+    }
 
-    return (
-      <React.Fragment>
-        <MessagesHeader />
+    displayMessages = messages =>
+        messages.length > 0 &&
+        messages.map(message => (
+            <Message
+                key={message.timestamp}
+                message={message}
+                user={this.state.user}
+            />
+        ))
 
-        <Segment>
-          <Comment.Group className='messages'>
-            {this.displayMessages(messages)}
-          </Comment.Group>
-        </Segment>
+    render() {
+        const { messagesRef, messages, channel, user } = this.state
 
-        <MessageForm
-          messagesRef={messagesRef}
-          currentChannel={channel}
-          currentUser={user}
-        />
-      </React.Fragment>
-    );
-  }
+        return (
+            <React.Fragment>
+                <MessagesHeader />
+
+                <Segment>
+                    <Comment.Group className='messages'>
+                        {this.displayMessages(messages)}
+                    </Comment.Group>
+                </Segment>
+
+                <MessageForm
+                    messagesRef={messagesRef}
+                    currentChannel={channel}
+                    currentUser={user}
+                />
+            </React.Fragment>
+        )
+    }
 }
 
-export default Messages;
+export default Messages
