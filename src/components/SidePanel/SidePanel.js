@@ -1,21 +1,21 @@
 import React, { Component } from 'react'
-import { Menu } from 'semantic-ui-react'
 import UserPanel from './UserPanel'
 import Channels from './Channels'
-
+import { Menu } from 'semantic-ui-react'
 
 class SidePanel extends Component {
     render() {
-        const {currentUser} = this.props
+        const { currentUser } = this.props
+
         return (
             <Menu
-                size="large"
+                size='large'
                 inverted
-                fixed="left"
+                fixed='left'
                 vertical
-                style={{ background: "#4c3c4c", fontSize: "1.2rem" }}
+                style={{ background: '#4c3c4c', fontSize: '1.2rem' }}
             >
-                <UserPanel currentUser={currentUser}/>
+                <UserPanel currentUser={currentUser} />
                 <Channels currentUser={currentUser} />
             </Menu>
         )
