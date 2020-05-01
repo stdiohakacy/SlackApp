@@ -4,7 +4,8 @@ import firebase from '../../firebase'
 import MessagesHeader from './MessagesHeader'
 import MessageForm from './MessageForm'
 import Message from './Message'
-
+import {connect} from 'react-redux'
+import {setUserPosts} from '../../actions'
 class Messages extends React.Component {
     state = {
         privateChannel: this.props.isPrivateChannel,
@@ -37,14 +38,14 @@ class Messages extends React.Component {
             .child('starred')
             .once('value')
             .then(data => {
-                if(data.val()) {
+                if (data.val()) {
                     const channelIds = Object.keys(data.val())
                     const prevStarred = channelIds.includes(channelId)
-                    this.setState({isChannelStarred: prevStarred})                    
+                    this.setState({ isChannelStarred: prevStarred })
                 }
             })
     }
-    
+
 
     displayChannelName = channel => {
         return channel
@@ -64,6 +65,22 @@ class Messages extends React.Component {
         this.setState({ numUniqueUsers })
     }
 
+    countUserPosts = messages => {
+        let userPosts = messages.reduce((acc, message) => {
+            if (message.user.name in acc)
+                acc[message.user.name].count += 1
+            else {
+                acc[message.user.name] = {
+                    avatar: message.user.avatar,
+                    count: 1
+                }
+            }
+            return acc
+        }, {})
+
+        this.props.setUserPosts(userPosts)
+    }
+
     getMessagesRef = () => {
         const { messagesRef, privateMessagesRef, privateChannel } = this.state
         return privateChannel ? privateMessagesRef : messagesRef
@@ -79,6 +96,7 @@ class Messages extends React.Component {
                 messagesLoading: false
             })
             this.countUniqueUsers(loadedMessages)
+            this.countUserPosts(loadedMessages)
         })
     }
 
@@ -102,8 +120,7 @@ class Messages extends React.Component {
             if (
                 (message.content && message.content.match(regex)) ||
                 message.user.name.match(regex)
-            ) 
-            {
+            ) {
                 acc.push(message)
             }
             return acc
@@ -128,7 +145,7 @@ class Messages extends React.Component {
     }
 
     starChannel = () => {
-        if(this.state.isChannelStarred){
+        if (this.state.isChannelStarred) {
             this.state.usersRef
                 .child(`${this.state.user.uid}/starred`)
                 .update({
@@ -147,7 +164,7 @@ class Messages extends React.Component {
                 .child(`${this.state.user.uid}/starred`)
                 .child(this.state.channel.id)
                 .remove(err => {
-                    if(err)
+                    if (err)
                         console.log(err)
                 })
         }
@@ -155,15 +172,15 @@ class Messages extends React.Component {
 
     render() {
         // prettier-ignore
-        const { 
-            messagesRef, 
-            messages, 
-            channel, 
-            user, 
-            numUniqueUsers, 
-            searchTerm, 
-            searchResults, 
-            searchLoading, 
+        const {
+            messagesRef,
+            messages,
+            channel,
+            user,
+            numUniqueUsers,
+            searchTerm,
+            searchResults,
+            searchLoading,
             privateChannel,
             isChannelStarred,
         } = this.state
@@ -200,4 +217,4 @@ class Messages extends React.Component {
     }
 }
 
-export default Messages
+export default connect(null, {setUserPosts})(Messages)
