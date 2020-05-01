@@ -1,14 +1,6 @@
 import React from 'react'
 import firebase from '../../firebase'
-import {
-    Grid,
-    Form,
-    Segment,
-    Button,
-    Header,
-    Message,
-    Icon
-} from 'semantic-ui-react'
+import { Grid, Form, Segment, Button, Header, Message, Icon } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
 class Login extends React.Component {
@@ -18,9 +10,6 @@ class Login extends React.Component {
         errors: [],
         loading: false
     }
-
-    displayErrors = errors =>
-        errors.map((error, i) => <p key={i}>{error.message}</p>)
 
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value })
@@ -54,6 +43,9 @@ class Login extends React.Component {
             : ''
     }
 
+    displayErrors = errors =>
+        errors.map((error, i) => <p key={i}>{error.message}</p>)
+
     render() {
         const { email, password, errors, loading } = this.state
 
@@ -62,8 +54,8 @@ class Login extends React.Component {
                 <Grid.Column style={{ maxWidth: 450 }}>
                     <Header as='h1' icon color='violet' textAlign='center'>
                         <Icon name='code branch' color='violet' />
-            Login to DevChat
-          </Header>
+                        Login to DevChat
+                    </Header>
                     <Form onSubmit={this.handleSubmit} size='large'>
                         <Segment stacked>
                             <Form.Input
@@ -98,7 +90,7 @@ class Login extends React.Component {
                                 size='large'
                             >
                                 Submit
-              </Button>
+                            </Button>
                         </Segment>
                     </Form>
                     {errors.length > 0 && (

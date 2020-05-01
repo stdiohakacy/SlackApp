@@ -11,7 +11,10 @@ import MetaPanel from './MetaPanel/MetaPanel'
 const App = ({ currentUser, currentChannel, isPrivateChannel }) => (
     <Grid columns='equal' className='app' style={{ background: '#eee' }}>
         <ColorPanel />
-        <SidePanel key={currentUser && currentUser.uid} currentUser={currentUser} />
+        <SidePanel
+            key={currentUser && currentUser.uid}
+            currentUser={currentUser}
+        />
 
         <Grid.Column style={{ marginLeft: 320 }}>
             <Messages

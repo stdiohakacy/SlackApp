@@ -1,20 +1,19 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Segment, Comment } from 'semantic-ui-react'
 import firebase from '../../firebase'
-
 import MessagesHeader from './MessagesHeader'
 import MessageForm from './MessageForm'
 import Message from './Message'
 
-class Messages extends Component {
+class Messages extends React.Component {
     state = {
-        privateMessageRef: firebase.database().ref('privateMessages'),
+        privateChannel: this.props.isPrivateChannel,
+        privateMessagesRef: firebase.database().ref('privateMessages'),
         messagesRef: firebase.database().ref('messages'),
         messages: [],
         messagesLoading: true,
         channel: this.props.currentChannel,
         user: this.props.currentUser,
-        privateChannel: this.props.isPrivateChannel,
         numUniqueUsers: '',
         searchTerm: '',
         searchLoading: false,
@@ -24,69 +23,78 @@ class Messages extends Component {
     componentDidMount() {
         const { channel, user } = this.state
 
-        if (channel && user) {
+        if (channel && user)
             this.addListeners(channel.id)
-        }
+    }
+    
+
+    displayChannelName = channel => {
+        return channel
+            ? `${this.state.privateChannel ? '@' : '#'}${channel.name}`
+            : ''
     }
 
-    addListeners = channelId => {
-        this.addMessageListener(channelId)
+    countUniqueUsers = messages => {
+        const uniqueUsers = messages.reduce((acc, message) => {
+            if (!acc.includes(message.user.name)) {
+                acc.push(message.user.name)
+            }
+            return acc
+        }, [])
+        const plural = uniqueUsers.length > 1 || uniqueUsers.length === 0
+        const numUniqueUsers = `${uniqueUsers.length} user${plural ? 's' : ''}`
+        this.setState({ numUniqueUsers })
+    }
+
+    getMessagesRef = () => {
+        const { messagesRef, privateMessagesRef, privateChannel } = this.state
+        return privateChannel ? privateMessagesRef : messagesRef
     }
 
     addMessageListener = channelId => {
         let loadedMessages = []
         const ref = this.getMessagesRef()
-
         ref.child(channelId).on('child_added', snap => {
             loadedMessages.push(snap.val())
             this.setState({
                 messages: loadedMessages,
                 messagesLoading: false
             })
-
             this.countUniqueUsers(loadedMessages)
         })
     }
 
-    countUniqueUsers = (messages) => {
-        const uniqueUsers = messages.reduce((acc, message) => {
-            if (!acc.includes(message.user.name))
-                acc.push(message.user.name)
-            return acc
-        }, [])
-
-        const plural = uniqueUsers.length > 1 || uniqueUsers.length === 0
-
-        const numUniqueUsers = `${uniqueUsers.length} user${plural ? 's' : ''}`
-        this.setState({ numUniqueUsers })
+    addListeners = channelId => {
+        this.addMessageListener(channelId)
     }
 
     handleSearchChange = event => {
-        this.setState({
-            searchTerm: event.target.value,
-            searchLoading: true
-        }, () => this.handleSearchMessages())
+        this.setState(
+            {
+                searchTerm: event.target.value,
+                searchLoading: true
+            }, () => this.handleSearchMessages()
+        )
     }
 
     handleSearchMessages = () => {
-        const channelMessage = [...this.state.messages]
+        const channelMessages = [...this.state.messages]
         const regex = new RegExp(this.state.searchTerm, 'gi')
-        const searchResults = channelMessage.reduce((acc, message) => {
-            if (message.content && message.content.match(regex))
+        const searchResults = channelMessages.reduce((acc, message) => {
+            if (
+                (message.content && message.content.match(regex)) ||
+                message.user.name.match(regex)
+            ) 
+            {
                 acc.push(message)
+            }
             return acc
         }, [])
-
         this.setState({ searchResults })
+        setTimeout(() => this.setState({ searchLoading: false }), 1000)
     }
 
-    getMessagesRef = () => {
-        const { privateChannel, messagesRef, privateMessageRef } = this.state
-        return privateChannel ? privateMessageRef : messagesRef
-    }
-
-    displayMessages = messages =>
-        messages.length > 0 &&
+    displayMessages = messages => messages.length > 0 &&
         messages.map(message => (
             <Message
                 key={message.timestamp}
@@ -95,12 +103,19 @@ class Messages extends Component {
             />
         ))
 
-    displayChannelName = channel => {
-        return channel ? `${this.state.privateChannel ? '@' : '#'}${channel.name}` : ''
-    }
-
     render() {
-        const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults, privateChannel } = this.state
+        // prettier-ignore
+        const { 
+            messagesRef, 
+            messages, 
+            channel, 
+            user, 
+            numUniqueUsers, 
+            searchTerm, 
+            searchResults, 
+            searchLoading, 
+            privateChannel 
+        } = this.state
 
         return (
             <React.Fragment>
@@ -108,12 +123,15 @@ class Messages extends Component {
                     channelName={this.displayChannelName(channel)}
                     numUniqueUsers={numUniqueUsers}
                     handleSearchChange={this.handleSearchChange}
+                    searchLoading={searchLoading}
                     isPrivateChannel={privateChannel}
                 />
 
                 <Segment>
                     <Comment.Group className='messages'>
-                        {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
+                        {searchTerm
+                            ? this.displayMessages(searchResults)
+                            : this.displayMessages(messages)}
                     </Comment.Group>
                 </Segment>
 

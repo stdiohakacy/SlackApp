@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './components/App'
 import Login from './components/Auth/Login'
@@ -6,6 +6,7 @@ import Register from './components/Auth/Register'
 import Spinner from './Spinner'
 import registerServiceWorker from './registerServiceWorker'
 import firebase from './firebase'
+
 import 'semantic-ui-css/semantic.min.css'
 
 import {
@@ -23,11 +24,10 @@ import { setUser, clearUser } from './actions'
 
 const store = createStore(rootReducer, composeWithDevTools())
 
-class Root extends Component {
+class Root extends React.Component {
     componentDidMount() {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                // console.log(user)
                 this.props.setUser(user)
                 this.props.history.push('/')
             } else {

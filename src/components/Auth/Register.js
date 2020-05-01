@@ -1,15 +1,7 @@
 import React from 'react'
 import firebase from '../../firebase'
 import md5 from 'md5'
-import {
-    Grid,
-    Form,
-    Segment,
-    Button,
-    Header,
-    Message,
-    Icon
-} from 'semantic-ui-react'
+import { Grid, Form, Segment, Button, Header, Message, Icon } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
 class Register extends React.Component {
@@ -22,45 +14,6 @@ class Register extends React.Component {
         loading: false,
         usersRef: firebase.database().ref('users')
     }
-
-    isFormValid = () => {
-        let errors = []
-        let error
-
-        if (this.isFormEmpty(this.state)) {
-            error = { message: 'Fill in all fields' }
-            this.setState({ errors: errors.concat(error) })
-            return false
-        } else if (!this.isPasswordValid(this.state)) {
-            error = { message: 'Password is invalid' }
-            this.setState({ errors: errors.concat(error) })
-            return false
-        } else {
-            return true
-        }
-    }
-
-    isFormEmpty = ({ username, email, password, passwordConfirmation }) => {
-        return (
-            !username.length ||
-            !email.length ||
-            !password.length ||
-            !passwordConfirmation.length
-        )
-    }
-
-    isPasswordValid = ({ password, passwordConfirmation }) => {
-        if (password.length < 6 || passwordConfirmation.length < 6) {
-            return false
-        } else if (password !== passwordConfirmation) {
-            return false
-        } else {
-            return true
-        }
-    }
-
-    displayErrors = errors =>
-        errors.map((error, i) => <p key={i}>{error.message}</p>)
 
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value })
@@ -105,6 +58,44 @@ class Register extends React.Component {
         }
     }
 
+    isFormEmpty = ({ username, email, password, passwordConfirmation }) => {
+        return (
+            !username.length ||
+            !email.length ||
+            !password.length ||
+            !passwordConfirmation.length
+        )
+    }
+
+    isPasswordValid = ({ password, passwordConfirmation }) => {
+        if (password.length < 6 || passwordConfirmation.length < 6) {
+            return false
+        } else if (password !== passwordConfirmation) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    isFormValid = () => {
+        let errors = []
+        let error
+
+        if (this.isFormEmpty(this.state)) {
+            error = { message: 'Fill in all fields' }
+            this.setState({ errors: errors.concat(error) })
+            return false
+        } 
+        else if (!this.isPasswordValid(this.state)) {
+            error = { message: 'Password is invalid' }
+            this.setState({ errors: errors.concat(error) })
+            return false
+        } 
+        else {
+            return true
+        }
+    }
+
     saveUser = createdUser => {
         return this.state.usersRef.child(createdUser.user.uid).set({
             name: createdUser.user.displayName,
@@ -112,6 +103,9 @@ class Register extends React.Component {
         })
     }
 
+    displayErrors = errors =>
+        errors.map((error, i) => <p key={i}>{error.message}</p>)
+    
     handleInputError = (errors, inputName) => {
         return errors.some(error => error.message.toLowerCase().includes(inputName))
             ? 'error'
@@ -133,8 +127,8 @@ class Register extends React.Component {
                 <Grid.Column style={{ maxWidth: 450 }}>
                     <Header as='h1' icon color='orange' textAlign='center'>
                         <Icon name='puzzle piece' color='orange' />
-            Register for DevChat
-          </Header>
+                        Register for DevChat
+                    </Header>
                     <Form onSubmit={this.handleSubmit} size='large'>
                         <Segment stacked>
                             <Form.Input
@@ -192,7 +186,7 @@ class Register extends React.Component {
                                 size='large'
                             >
                                 Submit
-              </Button>
+                            </Button>
                         </Segment>
                     </Form>
                     {errors.length > 0 && (

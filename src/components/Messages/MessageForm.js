@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import uuidv4 from 'uuid/v4'
 import firebase from '../../firebase'
 import { Segment, Button, Input } from 'semantic-ui-react'
@@ -6,7 +6,7 @@ import { Segment, Button, Input } from 'semantic-ui-react'
 import FileModal from './FileModal'
 import ProgressBar from './ProgressBar'
 
-class MessageForm extends Component {
+class MessageForm extends React.Component {
     state = {
         storageRef: firebase.storage().ref(),
         uploadTask: null,
@@ -37,11 +37,10 @@ class MessageForm extends Component {
                 avatar: this.state.user.photoURL
             }
         }
-        if (fileUrl !== null) {
+        if (fileUrl)
             message['image'] = fileUrl
-        } else {
+        else 
             message['content'] = this.state.message
-        }
         return message
     }
 
@@ -65,7 +64,8 @@ class MessageForm extends Component {
                         errors: this.state.errors.concat(err)
                     })
                 })
-        } else {
+        } 
+        else {
             this.setState({
                 errors: this.state.errors.concat({ message: 'Add a message' })
             })
@@ -73,10 +73,11 @@ class MessageForm extends Component {
     }
 
     getPath = () => {
-        if(this.props.isPrivateChannel)
+        if (this.props.isPrivateChannel) {
             return `chat/private-${this.state.channel.id}`
-        else
-            return `chat/public`
+        } else {
+            return 'chat/public'
+        }
     }
 
     uploadFile = (file, metadata) => {
@@ -105,8 +106,7 @@ class MessageForm extends Component {
                             uploadState: 'error',
                             uploadTask: null
                         })
-                    },
-                    () => {
+                    }, () => {
                         this.state.uploadTask.snapshot.ref
                             .getDownloadURL()
                             .then(downloadUrl => {
@@ -142,11 +142,6 @@ class MessageForm extends Component {
             })
     }
 
-    keyPressed = event => {
-        if(event.key === 'Enter')
-            this.sendMessage()
-    }
-
     render() {
         // prettier-ignore
         const { errors, message, loading, modal, uploadState, percentUploaded } = this.state
@@ -167,7 +162,6 @@ class MessageForm extends Component {
                             : ''
                     }
                     placeholder='Write your message'
-                    onKeyPress={this.keyPressed}
                 />
                 <Button.Group icon widths='2'>
                     <Button
@@ -180,11 +174,11 @@ class MessageForm extends Component {
                     />
                     <Button
                         color='teal'
+                        disabled={uploadState === 'uploading'}
                         onClick={this.openModal}
                         content='Upload Media'
                         labelPosition='right'
                         icon='cloud upload'
-                        disabled={uploadState === 'uploading'}
                     />
                 </Button.Group>
                 <FileModal
