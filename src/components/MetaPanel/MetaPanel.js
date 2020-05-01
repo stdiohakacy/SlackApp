@@ -1,8 +1,6 @@
 import React from 'react'
 import { Segment, Header, Accordion, Icon, Image, List } from 'semantic-ui-react'
 
-//7:47
-
 class MetaPanel extends React.Component {
     state = {
         channel: this.props.currentChannel,
@@ -16,8 +14,6 @@ class MetaPanel extends React.Component {
         const newIndex = activeIndex === index ? -1 : index
         this.setState({ activeIndex: newIndex })
     }
-    
-    formatCount = num => (num > 1 || num === 0 ? `${num} posts` : `${num} post`)
 
     displayTopPosters = posts => (
         Object.entries(posts)
@@ -32,6 +28,8 @@ class MetaPanel extends React.Component {
                 </List.Item>
             )).slice(0, 5)
     )
+    
+    formatCount = num => (num > 1 || num === 0 ? `${num} posts` : `${num} post`)
 
     render() {
         const { activeIndex, privateChannel, channel } = this.state
