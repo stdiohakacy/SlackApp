@@ -98,9 +98,9 @@ class DirectMessages extends React.Component {
                 <Menu.Item>
                     <span>
                         <Icon name='mail' /> DIRECT MESSAGES
-          </span>{' '}
-          ({users.length})
-        </Menu.Item>
+                    </span>{' '}
+                    ({users.length})
+                </Menu.Item>
                 {users.map(user => (
                     <Menu.Item
                         key={user.uid}
@@ -112,7 +112,7 @@ class DirectMessages extends React.Component {
                             name='circle'
                             color={this.isUserOnline(user) ? 'green' : 'red'}
                         />
-            @ {user.name}
+                    @ {user.name}
                     </Menu.Item>
                 ))}
             </Menu.Menu>

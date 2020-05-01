@@ -1,7 +1,7 @@
 import React from 'react'
 import { Menu, Icon } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import {setCurrentChannel, setPrivateChannel} from '../../actions'
+import { setCurrentChannel, setPrivateChannel } from '../../actions'
 import firebase from '../../firebase'
 
 class Starred extends React.Component {
@@ -13,7 +13,7 @@ class Starred extends React.Component {
     }
 
     componentDidMount() {
-        if(this.state.user)
+        if (this.state.user)
             this.addListeners(this.state.user.uid)
     }
 
@@ -22,22 +22,22 @@ class Starred extends React.Component {
             .child(userId)
             .child('starred')
             .on('child_added', snap => {
-                const starredChannel = {id: snap.key, ...snap.val()}
+                const starredChannel = { id: snap.key, ...snap.val() }
                 this.setState({
                     starredChannels: [...this.state.starredChannels, starredChannel]
-                })                
+                })
             })
 
         this.state.usersRef
             .child(userId)
             .child('starred')
             .on('child_removed', snap => {
-                const channelToRemove = {id: snap.key, ...snap.val()}
+                const channelToRemove = { id: snap.key, ...snap.val() }
                 const filteredChannels = this.state.starredChannels.filter(channel => {
                     return channel.id !== channelToRemove.id
                 })
 
-                this.setState({ starredChannels: filteredChannels})
+                this.setState({ starredChannels: filteredChannels })
             })
     }
 
@@ -81,4 +81,4 @@ class Starred extends React.Component {
     }
 }
 
-export default connect(null, {setCurrentChannel, setPrivateChannel}) (Starred)
+export default connect(null, { setCurrentChannel, setPrivateChannel })(Starred)

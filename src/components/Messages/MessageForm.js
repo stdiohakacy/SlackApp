@@ -39,7 +39,7 @@ class MessageForm extends React.Component {
         }
         if (fileUrl)
             message['image'] = fileUrl
-        else 
+        else
             message['content'] = this.state.message
         return message
     }
@@ -64,7 +64,7 @@ class MessageForm extends React.Component {
                         errors: this.state.errors.concat(err)
                     })
                 })
-        } 
+        }
         else {
             this.setState({
                 errors: this.state.errors.concat({ message: 'Add a message' })

@@ -4,8 +4,8 @@ import firebase from '../../firebase'
 import MessagesHeader from './MessagesHeader'
 import MessageForm from './MessageForm'
 import Message from './Message'
-import {connect} from 'react-redux'
-import {setUserPosts} from '../../actions'
+import { connect } from 'react-redux'
+import { setUserPosts } from '../../actions'
 class Messages extends React.Component {
     state = {
         privateChannel: this.props.isPrivateChannel,
@@ -217,4 +217,4 @@ class Messages extends React.Component {
     }
 }
 
-export default connect(null, {setUserPosts})(Messages)
+export default connect(null, { setUserPosts })(Messages)

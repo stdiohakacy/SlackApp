@@ -19,11 +19,11 @@ class MessagesHeader extends React.Component {
                 <Header fluid='true' as='h2' floated='left' style={{ marginBottom: 0 }}>
                     <span>
                         {channelName}
-                        {!isPrivateChannel && 
-                            (<Icon 
-                                onClick={handleStar} 
+                        {!isPrivateChannel &&
+                            (<Icon
+                                onClick={handleStar}
                                 name={isChannelStarred ? 'star' : 'star outline'}
-                                color={isChannelStarred ? 'yellow' : 'black'} 
+                                color={isChannelStarred ? 'yellow' : 'black'}
                             />)
                         }
                     </span>
