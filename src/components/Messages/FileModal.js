@@ -8,11 +8,18 @@ class FileModal extends React.Component {
         authorized: ['image/jpeg', 'image/png']
     }
 
+    addFile = event => {
+        const file = event.target.files[0]
+        if (file) {
+            this.setState({ file })
+        }
+    }
+
     sendFile = () => {
         const { file } = this.state
         const { uploadFile, closeModal } = this.props
 
-        if (file) {
+        if (file !== null) {
             if (this.isAuthorized(file.name)) {
                 const metadata = { contentType: mime.lookup(file.name) }
                 uploadFile(file, metadata)
@@ -22,12 +29,6 @@ class FileModal extends React.Component {
         }
     }
 
-    addFile = event => {
-        const file = event.target.files[0]
-        if (file) 
-            this.setState({ file })
-    }
-    
     isAuthorized = filename =>
         this.state.authorized.includes(mime.lookup(filename))
 

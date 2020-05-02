@@ -9,12 +9,7 @@ import firebase from './firebase'
 
 import 'semantic-ui-css/semantic.min.css'
 
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    withRouter
-} from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, withRouter } from 'react-router-dom'
 
 import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
@@ -28,6 +23,7 @@ class Root extends React.Component {
     componentDidMount() {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
+                // console.log(user)
                 this.props.setUser(user)
                 this.props.history.push('/')
             } else {

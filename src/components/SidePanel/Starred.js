@@ -1,8 +1,8 @@
 import React from 'react'
-import { Menu, Icon } from 'semantic-ui-react'
+import firebase from '../../firebase'
 import { connect } from 'react-redux'
 import { setCurrentChannel, setPrivateChannel } from '../../actions'
-import firebase from '../../firebase'
+import { Menu, Icon } from 'semantic-ui-react'
 
 class Starred extends React.Component {
     state = {
@@ -13,8 +13,9 @@ class Starred extends React.Component {
     }
 
     componentDidMount() {
-        if (this.state.user)
+        if (this.state.user) {
             this.addListeners(this.state.user.uid)
+        }
     }
 
     addListeners = userId => {
@@ -36,7 +37,6 @@ class Starred extends React.Component {
                 const filteredChannels = this.state.starredChannels.filter(channel => {
                     return channel.id !== channelToRemove.id
                 })
-
                 this.setState({ starredChannels: filteredChannels })
             })
     }
@@ -67,18 +67,22 @@ class Starred extends React.Component {
 
     render() {
         const { starredChannels } = this.state
+
         return (
             <Menu.Menu className='menu'>
                 <Menu.Item>
                     <span>
                         <Icon name='star' /> STARRED
-                    </span>{' '}
-                    ({starredChannels.length}) />
-                </Menu.Item>
+          </span>{' '}
+          ({starredChannels.length})
+        </Menu.Item>
                 {this.displayChannels(starredChannels)}
             </Menu.Menu>
         )
     }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel })(Starred)
+export default connect(
+    null,
+    { setCurrentChannel, setPrivateChannel }
+)(Starred)

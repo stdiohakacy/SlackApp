@@ -11,6 +11,9 @@ class Login extends React.Component {
         loading: false
     }
 
+    displayErrors = errors =>
+        errors.map((error, i) => <p key={i}>{error.message}</p>)
+
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value })
     }
@@ -43,9 +46,6 @@ class Login extends React.Component {
             : ''
     }
 
-    displayErrors = errors =>
-        errors.map((error, i) => <p key={i}>{error.message}</p>)
-
     render() {
         const { email, password, errors, loading } = this.state
 
@@ -54,8 +54,8 @@ class Login extends React.Component {
                 <Grid.Column style={{ maxWidth: 450 }}>
                     <Header as='h1' icon color='violet' textAlign='center'>
                         <Icon name='code branch' color='violet' />
-                        Login to DevChat
-                    </Header>
+            Login to DevChat
+          </Header>
                     <Form onSubmit={this.handleSubmit} size='large'>
                         <Segment stacked>
                             <Form.Input

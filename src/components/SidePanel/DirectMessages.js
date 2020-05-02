@@ -15,8 +15,9 @@ class DirectMessages extends React.Component {
     }
 
     componentDidMount() {
-        if (this.state.user)
+        if (this.state.user) {
             this.addListeners(this.state.user.uid)
+        }
     }
 
     addListeners = currentUserUid => {
@@ -36,7 +37,7 @@ class DirectMessages extends React.Component {
                 const ref = this.state.presenceRef.child(currentUserUid)
                 ref.set(true)
                 ref.onDisconnect().remove(err => {
-                    if (err) {
+                    if (err !== null) {
                         console.error(err)
                     }
                 })

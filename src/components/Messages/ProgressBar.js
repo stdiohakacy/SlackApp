@@ -1,5 +1,5 @@
-import React from 'react'
-import { Progress } from 'semantic-ui-react'
+import React from 'react';
+import { Progress } from 'semantic-ui-react';
 
 const ProgressBar = ({ uploadState, percentUploaded }) =>
     uploadState === 'uploading' && (
@@ -11,6 +11,6 @@ const ProgressBar = ({ uploadState, percentUploaded }) =>
             size='medium'
             inverted
         />
-    )
+    );
 
-export default ProgressBar
+export default ProgressBar;
