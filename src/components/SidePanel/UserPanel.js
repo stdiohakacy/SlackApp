@@ -9,12 +9,19 @@ class UserPanel extends React.Component {
         modal: false,
         previewImage: '',
         croppedImage: '',
-        blob: ''
+        blob: '',
+        uploadCroppedImage: '',
+        storageRef: firebase.storage().ref(),
+        usersRef: firebase.database().ref('users'),
+        userRef: firebase.auth().currentUser,
+        metadata: {
+            contentType: 'image/jpeg'
+        }
     }
 
-    openModal = () => this.setState({modal: true})
+    openModal = () => this.setState({ modal: true })
 
-    closeModal = () => this.setState({modal: false})
+    closeModal = () => this.setState({ modal: false })
 
     dropdownOptions = () => [
         {
@@ -47,16 +54,16 @@ class UserPanel extends React.Component {
         const file = event.target.files[0]
         const reader = new FileReader()
 
-        if(file) {
+        if (file) {
             reader.readAsDataURL(file)
             reader.addEventListener('load', () => {
-                this.setState({previewImage: reader.result})
+                this.setState({ previewImage: reader.result })
             })
         }
     }
 
     handleCropImage = () => {
-        if(this.avatarEditor) {
+        if (this.avatarEditor) {
             this.avatarEditor.getImageScaledToCanvas().toBlob((blob => {
                 let imageUrl = URL.createObjectURL(blob)
 
@@ -68,8 +75,44 @@ class UserPanel extends React.Component {
         }
     }
 
+    uploadCroppedImage = () => {
+        const { storageRef, userRef, blob, metadata } = this.state
+        storageRef
+            .child(`avatar/user-${userRef.uid}`)
+            .put(blob, metadata)
+            .then(snap => {
+                snap.ref.getDownloadURL().then(downloadURL => {
+                    this.setState({uploadCroppedImage: downloadURL}, () => {
+                        this.changeAvatar()
+                    })
+                })
+            })
+        }
+
+    changeAvatar = () => {
+        this.state.userRef
+            .updateProfile({
+                photoURL: this.state.uploadCroppedImage
+            })
+            .then(() => {
+                console.log('PhotoURL updated!')
+                this.closeModal()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+        this.state.usersRef
+            .child(this.state.user.uid)
+            .update({avatar: this.state.uploadCroppedImage})
+            .then(() => {
+                console.log('User avatar updated!')
+            })
+            .catch(err => console.log(err))
+    }
+
     render() {
-        const { user, modal, previewImage, croppedImage } = this.state
+        const { user, modal, previewImage, croppedImage, metadata } = this.state
         const { primaryColor } = this.props
 
         return (
@@ -99,7 +142,7 @@ class UserPanel extends React.Component {
                     <Modal basic open={modal} onClose={this.closeModal}>
                         <Modal.Header>Change Avatar</Modal.Header>
                         <Modal.Content>
-                            <Input 
+                            <Input
                                 fluid
                                 type='file'
                                 label='New avatar'
@@ -121,8 +164,8 @@ class UserPanel extends React.Component {
                                     </Grid.Column>
                                     <Grid.Column className='ui center aligned grid'>
                                         {croppedImage && (
-                                            <Image 
-                                                style={{margin: '3.5em auto'}}
+                                            <Image
+                                                style={{ margin: '3.5em auto' }}
                                                 width={100}
                                                 height={100}
                                                 src={croppedImage}
@@ -133,7 +176,7 @@ class UserPanel extends React.Component {
                             </Grid>
                         </Modal.Content>
                         <Modal.Actions>
-                            {croppedImage && <Button color='green' inverted>
+                            {croppedImage && <Button color='green' inverted onClick={this.uploadCroppedImage}>
                                 <Icon name='save' /> Change Avatar
                             </Button>}
 
