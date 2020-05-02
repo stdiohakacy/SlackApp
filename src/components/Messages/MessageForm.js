@@ -32,7 +32,10 @@ class MessageForm extends React.Component {
         this.setState({ [event.target.name]: event.target.value })
     }
 
-    handleKeyDown = () => {
+    handleKeyDown = event => {
+        if (event.keyCode === 13)
+            this.sendMessage()
+
         const { message, typingRef, channel, user } = this.state
 
         if (message) {
@@ -115,7 +118,8 @@ class MessageForm extends React.Component {
                         errors: this.state.errors.concat(err)
                     })
                 })
-        } else {
+        } 
+        else {
             this.setState({
                 errors: this.state.errors.concat({ message: 'Add a message' })
             })

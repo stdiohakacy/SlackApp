@@ -8,4 +8,4 @@ const Skeleton = () => (
     </div>
 );
 
-export default Skeleton;
+export default Skeleton
