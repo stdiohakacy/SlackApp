@@ -21,13 +21,13 @@ class ColorPanel extends React.Component {
             this.addListener(this.state.user.uid)
         }
     }
-    
+
     componentWillUnmount() {
         this.removeListener()
     }
 
     removeListener = () => {
-        
+        this.state.usersRef.child(`${this.state.user.uid}/colors`).off()
     }
 
     addListener = userId => {
@@ -125,10 +125,10 @@ class ColorPanel extends React.Component {
                     <Modal.Actions>
                         <Button color='green' inverted onClick={this.handleSaveColors}>
                             <Icon name='checkmark' /> Save Colors
-                        </Button>
+            </Button>
                         <Button color='red' inverted onClick={this.closeModal}>
                             <Icon name='remove' /> Cancel
-                        </Button>
+            </Button>
                     </Modal.Actions>
                 </Modal>
             </Sidebar>

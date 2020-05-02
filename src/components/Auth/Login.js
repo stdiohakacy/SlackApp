@@ -90,7 +90,7 @@ class Login extends React.Component {
                                 size='large'
                             >
                                 Submit
-                            </Button>
+              </Button>
                         </Segment>
                     </Form>
                     {errors.length > 0 && (

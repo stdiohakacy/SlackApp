@@ -25,9 +25,9 @@ class MessageForm extends React.Component {
     }
 
     componentWillUnmount() {
-        if(this.state.uploadTask) {
+        if (this.state.uploadTask !== null) {
             this.state.uploadTask.cancel()
-            this.setState({uploadTask: null})
+            this.setState({ uploadTask: null })
         }
     }
 
@@ -40,8 +40,9 @@ class MessageForm extends React.Component {
     }
 
     handleKeyDown = event => {
-        if (event.keyCode === 13)
+        if (event.ctrlKey && event.keyCode === 13) {
             this.sendMessage()
+        }
 
         const { message, typingRef, channel, user } = this.state
 
@@ -125,8 +126,7 @@ class MessageForm extends React.Component {
                         errors: this.state.errors.concat(err)
                     })
                 })
-        } 
-        else {
+        } else {
             this.setState({
                 errors: this.state.errors.concat({ message: 'Add a message' })
             })

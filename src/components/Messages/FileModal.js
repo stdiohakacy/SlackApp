@@ -52,10 +52,10 @@ class FileModal extends React.Component {
                 <Modal.Actions>
                     <Button onClick={this.sendFile} color='green' inverted>
                         <Icon name='checkmark' /> Send
-                    </Button>
+          </Button>
                     <Button color='red' inverted onClick={closeModal}>
                         <Icon name='remove' /> Cancel
-                    </Button>
+          </Button>
                 </Modal.Actions>
             </Modal>
         )

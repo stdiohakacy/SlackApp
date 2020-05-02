@@ -133,8 +133,8 @@ class Register extends React.Component {
                 <Grid.Column style={{ maxWidth: 450 }}>
                     <Header as='h1' icon color='orange' textAlign='center'>
                         <Icon name='puzzle piece' color='orange' />
-                        Register for DevChat
-                    </Header>
+            Register for DevChat
+          </Header>
                     <Form onSubmit={this.handleSubmit} size='large'>
                         <Segment stacked>
                             <Form.Input
@@ -192,7 +192,7 @@ class Register extends React.Component {
                                 size='large'
                             >
                                 Submit
-                            </Button>
+              </Button>
                         </Segment>
                     </Form>
                     {errors.length > 0 && (

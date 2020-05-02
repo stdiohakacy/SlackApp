@@ -41,11 +41,6 @@ class Messages extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.messageEnd)
-            this.scrollToBottom()
-    }
-
     componentWillUnmount() {
         this.removeListeners(this.state.listeners)
         this.state.connectedRef.off()
@@ -57,19 +52,27 @@ class Messages extends React.Component {
         })
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (this.messagesEnd) {
+            this.scrollToBottom()
+        }
+    }
+
     addToListeners = (id, ref, event) => {
         const index = this.state.listeners.findIndex(listener => {
-            return listener.id === id && listener.ref === ref && listener.event === event
+            return (
+                listener.id === id && listener.ref === ref && listener.event === event
+            )
         })
+
         if (index === -1) {
             const newListener = { id, ref, event }
             this.setState({ listeners: this.state.listeners.concat(newListener) })
         }
     }
 
-
     scrollToBottom = () => {
-        this.messageEnd.scrollIntoView({ behavior: 'smooth' })
+        this.messagesEnd.scrollIntoView({ behavior: 'smooth' })
     }
 
     addListeners = channelId => {
@@ -99,7 +102,6 @@ class Messages extends React.Component {
         })
         this.addToListeners(channelId, this.state.typingRef, 'child_removed')
 
-
         this.state.connectedRef.on('value', snap => {
             if (snap.val() === true) {
                 this.state.typingRef
@@ -127,7 +129,6 @@ class Messages extends React.Component {
             this.countUniqueUsers(loadedMessages)
             this.countUserPosts(loadedMessages)
         })
-
         this.addToListeners(channelId, ref, 'child_added')
     }
 
@@ -274,20 +275,7 @@ class Messages extends React.Component {
 
     render() {
         // prettier-ignore
-        const {
-            messagesRef,
-            messages,
-            channel,
-            user,
-            numUniqueUsers,
-            searchTerm,
-            searchResults,
-            searchLoading,
-            privateChannel,
-            isChannelStarred,
-            typingUsers,
-            messagesLoading
-        } = this.state
+        const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults, searchLoading, privateChannel, isChannelStarred, typingUsers, messagesLoading } = this.state
 
         return (
             <React.Fragment>
@@ -308,7 +296,7 @@ class Messages extends React.Component {
                             ? this.displayMessages(searchResults)
                             : this.displayMessages(messages)}
                         {this.displayTypingUsers(typingUsers)}
-                        <div ref={node => (this.messageEnd = node)}></div>
+                        <div ref={node => (this.messagesEnd = node)} />
                     </Comment.Group>
                 </Segment>
 

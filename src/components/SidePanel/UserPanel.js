@@ -192,10 +192,10 @@ class UserPanel extends React.Component {
                             )}
                             <Button color='green' inverted onClick={this.handleCropImage}>
                                 <Icon name='image' /> Preview
-                            </Button>
+              </Button>
                             <Button color='red' inverted onClick={this.closeModal}>
                                 <Icon name='remove' /> Cancel
-                            </Button>
+              </Button>
                         </Modal.Actions>
                     </Modal>
                 </Grid.Column>
